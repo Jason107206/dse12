@@ -91,7 +91,10 @@ export default function Home() {
   }));
 
   useEffect(() => resetOptions(), [targetIndex])
-  useEffect(() => setLastIndex(Database[passage].content.length - 1), [passage])
+  useEffect(() => {
+    setLastIndex(Database[passage].content.length - 1)
+    resetOptions()
+  }, [passage])
   useEffect(() => {
     if (audioState) {
       audioPlayer.current?.play()
