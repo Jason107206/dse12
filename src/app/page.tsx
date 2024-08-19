@@ -1,16 +1,17 @@
 "use client"
 
 import { Database } from "@/database/database";
-import { Audiotrack, Close, Pause, PlayArrow } from "@mui/icons-material";
-import { Button, Fab, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Typography } from "@mui/material";
+import { Audiotrack, Close, ExitToApp, Pause, PlayArrow, RestartAlt } from "@mui/icons-material";
+import { Button, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, SelectChangeEvent, styled, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [passage, setPassage] = useState(0)
   const [status, setStatus] = useState(false)
 
-  const [sentence, setSentence] = useState(0)
-  const [answer, setAnswer] = useState(1)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [targetIndex, setTargetIndex] = useState(1)
+  const [lastIndex, setLastIndex] = useState(Database[passage].content.length - 1)
   const [options, setOptions] = useState([0])
 
   const [audioSrc, setAudioSrc] = useState("")
@@ -18,16 +19,18 @@ export default function Home() {
   const audioPlayer = useRef<HTMLAudioElement>(null)
 
   const resetOptions = () => {
-    let temp_options = [answer]
+    let temp_options = [targetIndex]
 
     while (temp_options.length <= 3) {
       let temp_number = Math.random() * Database[passage].content.length
       temp_number = Math.floor(temp_number)
 
       if (
-        temp_options.indexOf(sentence - 1) == -1 &&
-        temp_options.indexOf(sentence) == -1 &&
-        temp_options.indexOf(temp_number) == -1
+        temp_options.indexOf(temp_number) == -1 &&
+        (
+          temp_number > targetIndex + 3 ||
+          temp_number < targetIndex - 3
+        )
       ) temp_options.push(temp_number)
     }
 
@@ -40,8 +43,8 @@ export default function Home() {
   }
 
   const initializePractice = () => {
-    setSentence(0)
-    setAnswer(1)
+    setCurrentIndex(0)
+    setTargetIndex(1)
     setStatus(true)
     setAudioSrc(Database[passage].audio_src)
   }
@@ -53,11 +56,11 @@ export default function Home() {
   }
 
   const handleResponse = () => {
-    setSentence(sentence + 1)
-    setAnswer(answer + 1)
+    setCurrentIndex(currentIndex + 1)
+    setTargetIndex(targetIndex + 1)
   }
 
-  const AnswerButton = ({
+  const TargetIndexButton = ({
     label,
     isCorrect
   }: {
@@ -82,7 +85,20 @@ export default function Home() {
     </Button>
   }
 
-  useEffect(() => resetOptions(), [answer])
+  const BorderLinearProgress = styled(LinearProgress)(() => ({
+    height: 10,
+    borderRadius: 5
+  }));
+
+  useEffect(() => resetOptions(), [targetIndex])
+  useEffect(() => setLastIndex(Database[passage].content.length - 1), [passage])
+  useEffect(() => {
+    if (audioState) {
+      audioPlayer.current?.play()
+    } else {
+      audioPlayer.current?.pause()
+    }
+  }, [audioState])
 
   return (
     <div
@@ -105,11 +121,9 @@ export default function Home() {
               <Select
                 labelId="passage_select_label"
                 label="篇章"
-                onChange={(event: SelectChangeEvent) => {
-                  setPassage(parseInt(event.target.value))
-                }}
+                onChange={(event: SelectChangeEvent) => setPassage(parseInt(event.target.value))}
                 disabled={status}
-                value="0"
+                defaultValue={passage.toString()}
               >
                 {
                   Database.map((x, i) =>
@@ -150,10 +164,7 @@ export default function Home() {
                   color="secondary"
                   variant={audioState ? "contained" : "outlined"}
                   startIcon={audioState ? <Pause /> : <PlayArrow />}
-                  onClick={() => {
-                    audioState ? audioPlayer.current?.pause() : audioPlayer.current?.play()
-                    setAudioState(!audioState)
-                  }}
+                  onClick={() => setAudioState(!audioState)}
                 >
                   {
                     audioState ? "暫停" : "開始"
@@ -165,14 +176,22 @@ export default function Home() {
               className="p-2 grid content-evenly gap-8"
             >
               <div
-                className="grid gap-4"
+                className="grid gap-2"
               >
+                <Typography
+                  variant="body1"
+                  className="tracking-wider"
+                >
+                  {
+                    Database[passage].content[currentIndex - 1]
+                  }
+                </Typography>
                 <Typography
                   variant="h5"
                   className="tracking-wider"
                 >
                   {
-                    Database[passage].content[sentence]
+                    Database[passage].content[currentIndex]
                   }
                 </Typography>
               </div>
@@ -180,16 +199,38 @@ export default function Home() {
                 className="grid gap-4"
               >
                 {
+                  targetIndex <= lastIndex &&
                   options.map((x, i) =>
-                    <AnswerButton
+                    <TargetIndexButton
                       key={i}
                       label={Database[passage].content[x]}
-                      isCorrect={x == answer}
+                      isCorrect={x == targetIndex}
                     />
                   )
                 }
+                {
+                  targetIndex > lastIndex &&
+                  <>
+                    <Button
+                      onClick={initializePractice}
+                      startIcon={<RestartAlt />}
+                    >
+                      重新開始
+                    </Button>
+                    <Button
+                      onClick={exitPractice}
+                      startIcon={<ExitToApp />}
+                    >
+                      退出
+                    </Button>
+                  </>
+                }
               </div>
             </div>
+            <BorderLinearProgress
+              variant="determinate"
+              value={currentIndex / lastIndex * 100}
+            />
           </div>
         }
       </div>
