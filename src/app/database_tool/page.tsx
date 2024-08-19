@@ -4,18 +4,20 @@ import { TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
 export default function DatabaseToolLayout() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState([""]);
-  const [output, setOutput] = useState({});
+  const [title, setTitle] = useState("")
+  const [audioSrc, setAudioSrc] = useState("")
+  const [content, setContent] = useState([""])
+  const [output, setOutput] = useState({})
 
   useEffect(() => {
     setOutput(
       {
         title: title,
+        audio_src: audioSrc,
         content: content
       }
     )
-  }, [title, content])
+  }, [title, audioSrc, content])
 
   return (
     <div className="grid gap-8">
@@ -23,6 +25,12 @@ export default function DatabaseToolLayout() {
         label={"Title"}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
           setTitle(event.target.value)
+        }
+      />
+      <TextField
+        label={"Audio Source"}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+          setAudioSrc(event.target.value)
         }
       />
       <TextField
