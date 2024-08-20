@@ -2,7 +2,7 @@
 
 import { Database } from "@/database/database";
 import { Audiotrack, Close, ExitToApp, Pause, PlayArrow, RestartAlt } from "@mui/icons-material";
-import { Button, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, SelectChangeEvent, styled, Typography } from "@mui/material";
+import { Button, Fade, FormControl, IconButton, InputLabel, LinearProgress, MenuItem, Select, SelectChangeEvent, styled, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
@@ -112,129 +112,135 @@ export default function Home() {
       >
         {
           !status &&
-          <div
-            className="flex flex-col items-end justify-center gap-4"
-          >
-            <FormControl fullWidth>
-              <InputLabel
-                id="passage_select_label"
-              >
-                篇章
-              </InputLabel>
-              <Select
-                labelId="passage_select_label"
-                label="篇章"
-                onChange={(event: SelectChangeEvent) => setPassage(parseInt(event.target.value))}
-                disabled={status}
-                defaultValue={passage.toString()}
-              >
-                {
-                  Database.map((x, i) =>
-                    <MenuItem key={i} value={i}>
-                      {x.title}
-                    </MenuItem>
-                  )
-                }
-              </Select>
-            </FormControl>
-            <Button
-              variant={"outlined"}
-              startIcon={<PlayArrow />}
-              onClick={initializePractice}
+          <Fade in={!status}>
+            <div
+              className="flex flex-col items-end justify-center gap-4"
             >
-              開始
-            </Button>
-          </div>
+              <FormControl fullWidth>
+                <InputLabel
+                  id="passage_select_label"
+                >
+                  篇章
+                </InputLabel>
+                <Select
+                  labelId="passage_select_label"
+                  label="篇章"
+                  onChange={(event: SelectChangeEvent) => setPassage(parseInt(event.target.value))}
+                  disabled={status}
+                  defaultValue={passage.toString()}
+                >
+                  {
+                    Database.map((x, i) =>
+                      <MenuItem key={i} value={i}>
+                        {x.title}
+                      </MenuItem>
+                    )
+                  }
+                </Select>
+              </FormControl>
+              <Button
+                variant={"outlined"}
+                startIcon={<PlayArrow />}
+                onClick={initializePractice}
+              >
+                開始
+              </Button>
+            </div>
+          </Fade>
         }
         {
           status &&
-          <div
-            className="grid grid-rows-[auto_1fr]"
-          >
+          <Fade in={status}>
             <div
-              className="flex justify-between items-center gap-4"
-            >
-              <IconButton
-                onClick={exitPractice}
-              >
-                <Close />
-              </IconButton>
-              <div
-                className="flex items-center gap-4"
-              >
-                <Audiotrack color="secondary" />
-                <Button
-                  color="secondary"
-                  variant={audioState ? "contained" : "outlined"}
-                  startIcon={audioState ? <Pause /> : <PlayArrow />}
-                  onClick={() => setAudioState(!audioState)}
-                >
-                  {
-                    audioState ? "暫停" : "開始"
-                  }
-                </Button>
-              </div>
-            </div>
-            <div
-              className="p-2 grid content-evenly gap-8"
+              className="grid grid-rows-[auto_1fr]"
             >
               <div
-                className="grid gap-2"
+                className="flex justify-between items-center gap-4"
               >
-                <Typography
-                  variant="body1"
-                  className="tracking-wider"
+                <IconButton
+                  onClick={exitPractice}
                 >
-                  {
-                    Database[passage].content[currentIndex - 1]
-                  }
-                </Typography>
-                <Typography
-                  variant="h5"
-                  className="tracking-wider"
+                  <Close />
+                </IconButton>
+                <div
+                  className="flex items-center gap-4"
                 >
-                  {
-                    Database[passage].content[currentIndex]
-                  }
-                </Typography>
+                  <Audiotrack color="secondary" />
+                  <Button
+                    color="secondary"
+                    variant={audioState ? "contained" : "outlined"}
+                    startIcon={audioState ? <Pause /> : <PlayArrow />}
+                    onClick={() => setAudioState(!audioState)}
+                  >
+                    {
+                      audioState ? "暫停" : "開始"
+                    }
+                  </Button>
+                </div>
               </div>
               <div
-                className="grid gap-4"
+                className="p-2 grid content-evenly gap-8"
               >
-                {
-                  targetIndex <= lastIndex &&
-                  options.map((x, i) =>
-                    <TargetIndexButton
-                      key={i}
-                      label={Database[passage].content[x]}
-                      isCorrect={x == targetIndex}
-                    />
-                  )
-                }
-                {
-                  targetIndex > lastIndex &&
-                  <>
-                    <Button
-                      onClick={initializePractice}
-                      startIcon={<RestartAlt />}
-                    >
-                      重新開始
-                    </Button>
-                    <Button
-                      onClick={exitPractice}
-                      startIcon={<ExitToApp />}
-                    >
-                      退出
-                    </Button>
-                  </>
-                }
+                <div
+                  className="grid gap-2"
+                >
+                  <Typography
+                    variant="body1"
+                    className="tracking-wider"
+                  >
+                    {
+                      Database[passage].content[currentIndex - 1]
+                    }
+                  </Typography>
+                  <Typography
+                    variant="h5"
+                    className="tracking-wider"
+                  >
+                    {
+                      Database[passage].content[currentIndex]
+                    }
+                  </Typography>
+                </div>
+                <div
+                  className="grid gap-4"
+                >
+                  {
+                    targetIndex <= lastIndex &&
+                    options.map((x, i) =>
+                      <TargetIndexButton
+                        key={i}
+                        label={Database[passage].content[x]}
+                        isCorrect={x == targetIndex}
+                      />
+                    )
+                  }
+                  {
+                    targetIndex > lastIndex &&
+                    <>
+                      <Button
+                        onClick={initializePractice}
+                        startIcon={<RestartAlt />}
+                      >
+                        重新開始
+                      </Button>
+                      <Button
+                        onClick={exitPractice}
+                        startIcon={<ExitToApp />}
+                      >
+                        退出
+                      </Button>
+                    </>
+                  }
+                </div>
               </div>
+              <BorderLinearProgress
+                variant="determinate"
+                value={currentIndex / lastIndex * 100}
+              />
             </div>
-            <BorderLinearProgress
-              variant="determinate"
-              value={currentIndex / lastIndex * 100}
-            />
-          </div>
+
+          </Fade>
+
         }
       </div>
       <audio
