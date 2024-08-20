@@ -139,7 +139,10 @@ export default function Home() {
                 >
                   {
                     Database.map((x, i) =>
-                      <MenuItem key={i} value={i}>
+                      <MenuItem
+                        key={i}
+                        value={i}
+                      >
                         {x.title}
                       </MenuItem>
                     )

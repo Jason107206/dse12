@@ -66,6 +66,7 @@ export default function DatabaseToolLayout() {
           {
             content.map((x, i) =>
               <FormControl
+                key={i}
                 variant="outlined"
               >
                 <InputLabel
@@ -76,7 +77,6 @@ export default function DatabaseToolLayout() {
                 <OutlinedInput
                   multiline
                   id={"paragraph_" + i}
-                  key={i}
                   label={"Paragraph " + i}
                   onChange={event =>
                     setContent(content.map((x, j) =>
