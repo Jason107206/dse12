@@ -6,13 +6,15 @@ import { Button, Fade, FormControl, IconButton, InputLabel, LinearProgress, line
 import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
-  const [passage, setPassage] = useState(2)
   const [status, setStatus] = useState(false)
+  const [passageIndex, setPassageIndex] = useState(0)
 
-  const [currentParagraph, setCurrentParagraph] = useState(0)
-  const [lastParagraph, setLastParagraph] = useState(Database[passage].content.length - 1)
-  const [currentSentence, setCurrentSentence] = useState(0)
-  const [lastSentence, setLastSentence] = useState(Database[passage].content[currentParagraph].length - 1)
+  const [currentParagraphIndex, setCurrentParagraphIndex] = useState(0)
+  const [lastParagraphIndex, setLastParagraphIndex] = useState(0)
+  const [currentParagraph, setCurrentParagraph] = useState([""])
+
+  const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0)
+  const [lastSentenceIndex, setLastSentenceIndex] = useState(0)
   const [options, setOptions] = useState([1])
 
   const [audioSrc, setAudioSrc] = useState("")
@@ -20,17 +22,18 @@ export default function Home() {
   const audioPlayer = useRef<HTMLAudioElement>(null)
 
   const resetOptions = () => {
-    let temp_options = [currentSentence + 1]
+    let temp_options = [currentSentenceIndex + 1]
+    let total_options = lastSentenceIndex > 5 ? 4 : lastSentenceIndex - 1
 
-    while (temp_options.length <= 3) {
-      let temp_number = Math.random() * Database[passage].content[currentParagraph].length
+    while (temp_options.length < total_options) {
+      let temp_number = Math.random() * currentParagraph.length
       temp_number = Math.floor(temp_number)
 
       if (
         temp_options.indexOf(temp_number) == -1 &&
         (
-          temp_number > currentSentence + 2 ||
-          temp_number < currentSentence - 2
+          temp_number < currentSentenceIndex - 1 ||
+          temp_number > currentSentenceIndex + 1
         )
       ) temp_options.push(temp_number)
     }
@@ -44,28 +47,36 @@ export default function Home() {
   }
 
   useEffect(() => {
-    if (status) {
-      resetOptions()
-      setAudioSrc(Database[passage].audio_src)
+    if (currentParagraphIndex == 0) {
+      setCurrentParagraph(Database[passageIndex].content[0])
     } else {
-      setCurrentParagraph(0)
-      setCurrentSentence(0)
-      setAudioSrc("")
-      setAudioState(false)
+      setCurrentParagraphIndex(0)
     }
-  }, [status])
+    setLastParagraphIndex(Database[passageIndex].content.length - 1)
+  }, [passageIndex])
+
+  useEffect(() => {
+    setCurrentParagraph(Database[passageIndex].content[currentParagraphIndex])
+  }, [currentParagraphIndex])
+
+  useEffect(() => {
+    setCurrentSentenceIndex(0)
+    setLastSentenceIndex(currentParagraph.length - 1)
+  }, [currentParagraph])
 
   useEffect(() => {
     if (status) resetOptions()
-  }, [currentSentence])
+  }, [currentSentenceIndex])
 
   useEffect(() => {
-    setLastSentence(Database[passage].content[currentParagraph].length - 1)
-  }, [currentParagraph, lastParagraph])
-
-  useEffect(() => {
-    setLastParagraph(Database[passage].content.length - 1)
-  }, [passage])
+    if (status) {
+      resetOptions()
+      setAudioSrc(Database[passageIndex].audio_src)
+    } else {
+      setAudioState(false)
+      setAudioSrc("")
+    }
+  }, [status])
 
   useEffect(() => {
     if (audioState) {
@@ -75,7 +86,7 @@ export default function Home() {
     }
   }, [audioState])
 
-  const TargetIndexButton = ({
+  const AnswerButton = ({
     label,
     isCorrect
   }: {
@@ -90,7 +101,7 @@ export default function Home() {
       onClick={() => {
         setClicked(true)
         if (isCorrect) setTimeout(() => {
-          setCurrentSentence(currentSentence + 1)
+          setCurrentSentenceIndex(i => i + 1)
           setClicked(false)
         }, 700)
       }}
@@ -131,11 +142,10 @@ export default function Home() {
                 <Select
                   labelId="passage_select_label"
                   label="篇章"
-                  onChange={(event: SelectChangeEvent) => {
-                    setPassage(parseInt(event.target.value))
-                  }}
-                  disabled={status}
-                  defaultValue={passage.toString()}
+                  onChange={event =>
+                    setPassageIndex(parseInt(event.target.value))
+                  }
+                  defaultValue={passageIndex.toString()}
                 >
                   {
                     Database.map((x, i) =>
@@ -144,6 +154,32 @@ export default function Home() {
                         value={i}
                       >
                         {x.title}
+                      </MenuItem>
+                    )
+                  }
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel
+                  id="paragraph_select_label"
+                >
+                  段落
+                </InputLabel>
+                <Select
+                  labelId="paragraph_select_label"
+                  label="段落"
+                  onChange={event =>
+                    setCurrentParagraphIndex(parseInt(event.target.value))
+                  }
+                  value={currentParagraphIndex.toString()}
+                >
+                  {
+                    Database[passageIndex].content.map((x, i) =>
+                      <MenuItem
+                        key={i}
+                        value={i}
+                      >
+                        第{(i + 1).toLocaleString("zh-u-nu-hanidec")}段
                       </MenuItem>
                     )
                   }
@@ -200,7 +236,7 @@ export default function Home() {
                     className="tracking-wider"
                   >
                     {
-                      Database[passage].content[currentParagraph][currentSentence - 1]
+                      currentParagraph[currentSentenceIndex - 1]
                     }
                   </Typography>
                   <Typography
@@ -208,7 +244,7 @@ export default function Home() {
                     className="tracking-wider"
                   >
                     {
-                      Database[passage].content[currentParagraph][currentSentence]
+                      currentParagraph[currentSentenceIndex]
                     }
                   </Typography>
                 </div>
@@ -216,32 +252,29 @@ export default function Home() {
                   className="grid gap-4"
                 >
                   {
-                    currentSentence + 1 <= lastSentence &&
+                    currentSentenceIndex + 1 <= lastSentenceIndex &&
                     options.map((x, i) =>
-                      <TargetIndexButton
+                      <AnswerButton
                         key={i}
-                        label={Database[passage].content[currentParagraph][x]}
-                        isCorrect={x == currentSentence + 1}
+                        label={currentParagraph[x]}
+                        isCorrect={x == currentSentenceIndex + 1}
                       />
                     )
                   }
                   {
-                    currentSentence + 1 > lastSentence &&
+                    currentSentenceIndex + 1 > lastSentenceIndex &&
                     <>
                       <Button
-                        onClick={() => setCurrentSentence(0)}
+                        onClick={() => setCurrentSentenceIndex(0)}
                         startIcon={<RestartAlt />}
                       >
                         重新開始
                       </Button>
                       {
-                        currentParagraph + 1 > lastParagraph &&
+                        currentParagraphIndex + 1 > lastParagraphIndex &&
                         <>
                           <Button
-                            onClick={() => {
-                              setCurrentParagraph(0)
-                              setCurrentSentence(0)
-                            }}
+                            onClick={() => setCurrentParagraphIndex(0)}
                             startIcon={<SkipPrevious />}
                           >
                             從頭開始
@@ -255,13 +288,10 @@ export default function Home() {
                         </>
                       }
                       {
-                        !(currentParagraph + 1 > lastParagraph) &&
+                        !(currentParagraphIndex + 1 > lastParagraphIndex) &&
                         <>
                           <Button
-                            onClick={() => {
-                              setCurrentParagraph(currentParagraph + 1)
-                              setCurrentSentence(0)
-                            }}
+                            onClick={() => setCurrentParagraphIndex(i => i + 1)}
                             startIcon={<SkipNext />}
                           >
                             下一段落
@@ -276,12 +306,12 @@ export default function Home() {
                 className="flex gap-2"
               >
                 {
-                  [...Array(Database[passage].content.length)].map((x, i) =>
+                  [...Array(Database[passageIndex].content.length)].map((x, i) =>
                     <BorderLinearProgress
                       key={i}
                       variant="determinate"
                       value={
-                        i < currentParagraph ? 100 : i === currentParagraph ? currentSentence / lastSentence * 100 : 0
+                        i < currentParagraphIndex ? 100 : i === currentParagraphIndex ? currentSentenceIndex / lastSentenceIndex * 100 : 0
                       }
                     />
                   )

@@ -30,8 +30,7 @@ export const Database = [
         "鄉為身死而不受，今為妻妾之奉為之；",
         "鄉為身死而不受，今為所識窮乏者得我而為之，",
         "是亦不可以已乎？",
-        "此之謂失其本心。",
-        "」"
+        "此之謂失其本心。」"
       ]
     ]
   }, {
@@ -128,7 +127,7 @@ export const Database = [
     ]
   },
   {
-    "title": "X 出師表",
+    "title": "出師表",
     "author": "諸葛亮",
     "audio_src": "https://www.edb.gov.hk/attachment/tc/curriculum-development/kla/chi-edu/recommended-passages/ks4_09_c.mp3",
     "content": [
@@ -211,7 +210,7 @@ export const Database = [
     ]
   },
   {
-    "title": "X 師說",
+    "title": "師說",
     "author": "韓愈",
     "audio_src": "https://www.edb.gov.hk/attachment/tc/curriculum-development/kla/chi-edu/recommended-passages/ks4_12_c.mp3",
     "content": [
@@ -314,7 +313,7 @@ export const Database = [
     ]
   },
   {
-    "title": "X 岳陽樓記",
+    "title": "岳陽樓記",
     "author": "范仲淹",
     "audio_src": "https://www.edb.gov.hk/attachment/tc/curriculum-development/kla/chi-edu/recommended-passages/ks4_14_c.mp3",
     "content": [
@@ -368,7 +367,7 @@ export const Database = [
     ]
   },
   {
-    "title": "X 六國論",
+    "title": "六國論",
     "author": "蘇洵",
     "audio_src": "https://www.edb.gov.hk/attachment/tc/curriculum-development/kla/chi-edu/recommended-passages/ks4_15_c.mp3",
     "content": [
