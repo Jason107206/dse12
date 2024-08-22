@@ -240,7 +240,7 @@ export default function Home() {
                     }
                   </Typography>
                   <Typography
-                    variant="h5"
+                    variant="h4"
                     className="tracking-wider"
                   >
                     {
