@@ -8,7 +8,7 @@ import AnswerOption from "./answer-option";
 import NarrationPlayer from "./narration-player";
 
 export default function Home() {
-  const version = 11
+  const version = 12
 
   const [status, setStatus] = useState(false)
   const [passageIndex, setPassageIndex] = useState(0)
@@ -154,7 +154,7 @@ export default function Home() {
                 </Select>
               </FormControl>
               <Button
-                variant={"outlined"}
+                variant={"contained"}
                 startIcon={<PlayArrow />}
                 onClick={() => setStatus(true)}
               >

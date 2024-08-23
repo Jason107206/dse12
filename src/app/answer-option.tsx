@@ -19,7 +19,10 @@ const AnswerOption = (
     size="large"
     onClick={() => {
       setClicked(true)
-      if (isCorrect) setTimeout(() => onClick(), 500)
+      if (isCorrect) setTimeout(() => {
+        setClicked(false)
+        onClick()
+      }, 500)
     }}
     color={isClicked ? isCorrect ? "success" : "error" : "primary"}
   >
