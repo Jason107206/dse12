@@ -1,11 +1,15 @@
 "use client"
 
 import { Database } from "@/database/database";
-import { Audiotrack, Close, ExitToApp, Pause, PlayArrow, RestartAlt, SkipNext, SkipPrevious } from "@mui/icons-material";
+import { Close, ExitToApp, PlayArrow, RestartAlt, SkipNext, SkipPrevious } from "@mui/icons-material";
 import { Button, Fade, FormControl, IconButton, InputLabel, LinearProgress, linearProgressClasses, MenuItem, Select, SelectChangeEvent, styled, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
+import AnswerOption from "./answer-option";
+import NarrationPlayer from "./narration-player";
 
 export default function Home() {
+  const version = 11
+
   const [status, setStatus] = useState(false)
   const [passageIndex, setPassageIndex] = useState(0)
 
@@ -18,8 +22,6 @@ export default function Home() {
   const [options, setOptions] = useState([1])
 
   const [audioSrc, setAudioSrc] = useState("")
-  const [audioState, setAudioState] = useState(false)
-  const audioPlayer = useRef<HTMLAudioElement>(null)
 
   const resetOptions = () => {
     let temp_options = [currentSentenceIndex + 1]
@@ -56,11 +58,11 @@ export default function Home() {
   }, [passageIndex])
 
   useEffect(() => {
+    setCurrentSentenceIndex(0)
     setCurrentParagraph(Database[passageIndex].content[currentParagraphIndex])
   }, [currentParagraphIndex])
 
   useEffect(() => {
-    setCurrentSentenceIndex(0)
     setLastSentenceIndex(currentParagraph.length - 1)
   }, [currentParagraph])
 
@@ -73,43 +75,9 @@ export default function Home() {
       resetOptions()
       setAudioSrc(Database[passageIndex].audio_src)
     } else {
-      setAudioState(false)
       setAudioSrc("")
     }
   }, [status])
-
-  useEffect(() => {
-    if (audioState) {
-      audioPlayer.current?.play()
-    } else {
-      audioPlayer.current?.pause()
-    }
-  }, [audioState])
-
-  const AnswerButton = ({
-    label,
-    isCorrect
-  }: {
-    label: any,
-    isCorrect: Boolean
-  }) => {
-    const [isClicked, setClicked] = useState(false)
-
-    return <Button
-      variant={(isClicked && isCorrect) ? "contained" : "outlined"}
-      size="large"
-      onClick={() => {
-        setClicked(true)
-        if (isCorrect) setTimeout(() => {
-          setCurrentSentenceIndex(i => i + 1)
-          setClicked(false)
-        }, 700)
-      }}
-      color={isClicked ? isCorrect ? "success" : "error" : "primary"}
-    >
-      {label}
-    </Button>
-  }
 
   const BorderLinearProgress = styled(LinearProgress)(() => ({
     height: 6,
@@ -209,21 +177,14 @@ export default function Home() {
                 >
                   <Close />
                 </IconButton>
-                <div
-                  className="flex items-center gap-4"
-                >
-                  <Audiotrack color="secondary" />
-                  <Button
-                    color="secondary"
-                    variant={audioState ? "contained" : "outlined"}
-                    startIcon={audioState ? <Pause /> : <PlayArrow />}
-                    onClick={() => setAudioState(!audioState)}
-                  >
-                    {
-                      audioState ? "暫停" : "開始"
-                    }
-                  </Button>
-                </div>
+                <NarrationPlayer
+                  state={status}
+                  src={audioSrc}
+                  metadata={{
+                    title: Database[passageIndex].title,
+                    artist: Database[passageIndex].author
+                  }}
+                />
               </div>
               <div
                 className="p-2 grid content-evenly gap-8"
@@ -254,10 +215,11 @@ export default function Home() {
                   {
                     currentSentenceIndex + 1 <= lastSentenceIndex &&
                     options.map((x, i) =>
-                      <AnswerButton
+                      <AnswerOption
                         key={i}
                         label={currentParagraph[x]}
                         isCorrect={x == currentSentenceIndex + 1}
+                        onClick={() => setCurrentSentenceIndex(i => i + 1)}
                       />
                     )
                   }
@@ -321,12 +283,6 @@ export default function Home() {
           </Fade>
         }
       </div>
-      <audio
-        ref={audioPlayer}
-        src={audioSrc}
-        onPause={() => setAudioState(false)}
-        onEnded={() => setAudioState(false)}
-      />
     </div>
   );
 }
