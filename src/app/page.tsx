@@ -3,7 +3,7 @@
 import { Database } from "@/database/database";
 import { Close, ExitToApp, PlayArrow, RestartAlt, SkipNext, SkipPrevious } from "@mui/icons-material";
 import { Button, Fade, FormControl, IconButton, InputLabel, LinearProgress, linearProgressClasses, MenuItem, Select, SelectChangeEvent, styled, Typography } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import AnswerOption from "./answer-option";
 import NarrationPlayer from "./narration-player";
 
