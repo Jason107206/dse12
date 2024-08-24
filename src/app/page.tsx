@@ -8,7 +8,7 @@ import AnswerOption from "./answer-option";
 import NarrationPlayer from "./narration-player";
 
 export default function Home() {
-  const version = 12
+  const version = 13
 
   const [status, setStatus] = useState(false)
   const [passageIndex, setPassageIndex] = useState(0)
@@ -219,6 +219,7 @@ export default function Home() {
                         key={i}
                         label={currentParagraph[x]}
                         isCorrect={x == currentSentenceIndex + 1}
+                        index={currentSentenceIndex}
                         onClick={() => setCurrentSentenceIndex(i => i + 1)}
                       />
                     )
