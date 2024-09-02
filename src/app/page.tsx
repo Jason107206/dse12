@@ -3,13 +3,16 @@
 import { createContext, Dispatch, SetStateAction, useEffect, useState } from "react";
 import PassageSelector from "./components/passage-selector";
 import PassageViewer from "./components/passage-viewer";
-import { PASSAGE_SELECT, PASSAGE_VIEW } from "./constants";
+import { GAME_MATCHNG, PASSAGE_SELECT, PASSAGE_VIEW } from "./constants";
+import GameMatching from "./components/game-matching";
 
-const VERSION = 14
+const VERSION = 15
 
 interface PassageContextType {
   passage: Passage | null | undefined,
+  page: string | null | undefined,
   setPassage: Dispatch<SetStateAction<Passage | null | undefined>>
+  setPage: Dispatch<SetStateAction<string | null | undefined>>
 }
 
 export interface Passage {
@@ -22,7 +25,9 @@ export interface Passage {
 export const PassageContext = createContext<PassageContextType>(
   {
     passage: null,
-    setPassage: () => { }
+    page: null,
+    setPassage: () => { },
+    setPage: () => { }
   }
 )
 
@@ -37,8 +42,9 @@ export default function Home() {
   useEffect(() => {
     if (page) setPage(passage ? PASSAGE_VIEW : PASSAGE_SELECT)
   }, [passage])
+
   return (
-    <PassageContext.Provider value={{ passage, setPassage }}>
+    <PassageContext.Provider value={{ passage, page, setPassage, setPage }}>
       {
         page === PASSAGE_SELECT &&
         <PassageSelector />
@@ -46,6 +52,10 @@ export default function Home() {
       {
         page === PASSAGE_VIEW &&
         <PassageViewer />
+      }
+      {
+        page === GAME_MATCHNG &&
+        <GameMatching />
       }
     </PassageContext.Provider>
   )

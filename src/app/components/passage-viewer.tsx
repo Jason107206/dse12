@@ -1,8 +1,9 @@
-import { Audiotrack, Close } from "@mui/icons-material"
+import { Close, SpatialAudioOff, SportsEsports } from "@mui/icons-material"
 import { Box, IconButton, SwipeableDrawer, ToggleButton, Typography } from "@mui/material"
 import { Dispatch, SetStateAction, useContext, useState } from "react"
 import { PassageContext } from "../page"
 import NarrationPlayer from "./narration-player"
+import { GAME_MATCHNG } from "../constants"
 
 const Paragraph = (
   {
@@ -37,7 +38,7 @@ const PassageViewerHeader = (
     toggleControl: Dispatch<SetStateAction<boolean>>
   }
 ) => {
-  const { setPassage } = useContext(PassageContext)
+  const { setPassage, setPage } = useContext(PassageContext)
 
   const handleExit = () => {
     setPassage(null)
@@ -48,8 +49,9 @@ const PassageViewerHeader = (
   }
 
   return (
-    <div
-      className="flex items-center gap-4"
+    <Box
+      bgcolor="Background"
+      className="px-8 py-6 sticky top-0 flex items-center gap-4"
     >
       <IconButton
         onClick={handleExit}
@@ -59,13 +61,20 @@ const PassageViewerHeader = (
       <div className="flex-grow" />
       <ToggleButton
         value
-        color="secondary"
+        color="primary"
+        onClick={() => setPage(GAME_MATCHNG)}
+      >
+        <SportsEsports />
+      </ToggleButton>
+      <ToggleButton
+        value
+        color="primary"
         selected={isPlaying || showControl}
         onClick={handleToggleNarration}
       >
-        <Audiotrack />
+        <SpatialAudioOff />
       </ToggleButton>
-    </div>
+    </Box>
   )
 }
 
@@ -77,7 +86,7 @@ const PassageContentViewer = () => {
       {
         passage &&
         <div
-          className="p-2 flex flex-grow flex-col gap-8"
+          className="p-8 flex flex-grow flex-col gap-8"
         >
           <Typography
             variant="h4"
@@ -107,21 +116,12 @@ const PassageViewer = () => {
         <div
           className="h-full flex flex-col overflow-auto"
         >
-          <Box
-            bgcolor="background.default"
-            className="p-6 sticky top-0"
-          >
-            <PassageViewerHeader
-              isPlaying={isPlaying}
-              showControl={showPlayerControl}
-              toggleControl={togglePlayerControl}
-            />
-          </Box>
-          <div
-            className="px-6 pb-6 flex flex-grow flex-col gap-8"
-          >
-            <PassageContentViewer />
-          </div>
+          <PassageViewerHeader
+            isPlaying={isPlaying}
+            showControl={showPlayerControl}
+            toggleControl={togglePlayerControl}
+          />
+          <PassageContentViewer />
           <SwipeableDrawer
             anchor="bottom"
             open={showPlayerControl}

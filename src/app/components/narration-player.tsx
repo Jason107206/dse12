@@ -1,7 +1,8 @@
 import { FastForward, FastRewind, Pause, PlayArrow, RepeatOne, Speed } from "@mui/icons-material"
-import { Divider, Slider, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material"
+import { Box, Divider, Slider, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material"
 import { createContext, Dispatch, RefObject, SetStateAction, useContext, useEffect, useRef, useState } from "react"
 import { PassageContext } from "../page"
+import { timeFormat } from "../utils"
 
 interface PlayerContextType {
   player: RefObject<HTMLAudioElement> | null,
@@ -45,9 +46,6 @@ const PlayerControlProgressBar = () => {
   const isSeeking = useRef(false)
   const [timeInput, setTimeInput] = useState(time)
 
-  const format = (s: number) =>
-    `${s < 600 ? `0${Math.floor(s / 60)}` : Math.floor(s / 60)}:${s % 60 < 10 ? `0${Math.floor(s % 60)}` : Math.floor(s % 60)}`
-
   const handleChange = (value: number | number[]) => {
     if (!isSeeking.current) isSeeking.current = true
     setTimeInput(value as number)
@@ -64,13 +62,13 @@ const PlayerControlProgressBar = () => {
 
   return (
     <div
-      className="flex items-center gap-6"
+      className="flex items-center gap-8"
     >
       <Typography>
-        {format(timeInput)}
+        {timeFormat(timeInput)}
       </Typography>
       <Slider
-        color="secondary"
+        color="primary"
         min={0}
         max={duration}
         value={timeInput}
@@ -78,7 +76,7 @@ const PlayerControlProgressBar = () => {
         onChangeCommitted={handleChangeCommited}
       />
       <Typography>
-        {format(duration)}
+        {timeFormat(duration)}
       </Typography>
     </div>
   )
@@ -89,11 +87,11 @@ const PlayerControlButtonGroup = () => {
 
   return (
     <div
-      className="flex flex-grow items-center justify-between gap-6"
+      className="flex flex-grow items-center justify-between gap-8"
     >
       <ToggleButton
         value
-        color="secondary"
+        color="primary"
         selected={loop}
         onChange={() => toggleLoop(s => !s)}
       >
@@ -108,7 +106,7 @@ const PlayerControlButtonGroup = () => {
         </ToggleButton>
         <ToggleButton
           value
-          color="secondary"
+          color="primary"
           selected={playing}
           onChange={() => togglePlaying(s => !s)}
         >
@@ -125,7 +123,7 @@ const PlayerControlButtonGroup = () => {
       </ToggleButtonGroup>
       <ToggleButton
         value
-        color="secondary"
+        color="primary"
         selected={speed !== 1}
         onChange={() => setSpeed(s => s == 1.25 ? 1 : 1.25)}
       >
@@ -136,12 +134,12 @@ const PlayerControlButtonGroup = () => {
 }
 
 const PlayerControl = () => (
-  <div
-    className="p-6 flex flex-col gap-6"
+  <Box
+    className="p-8 flex flex-col gap-8"
   >
     <PlayerControlProgressBar />
     <PlayerControlButtonGroup />
-  </div>
+  </Box>
 )
 
 const Player = () => {
