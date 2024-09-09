@@ -133,19 +133,16 @@ const PlayerControlProgressBar = () => {
 
 export default function PassageViewerPlayer() {
   const { passage } = useApplicationContext()
-  const { player, playing, speed, loop, toggleLoop, togglePlaying, setTime, setDuration } = usePlayerContext()
-
-  const playerLoad = useCallback(() => {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: passage.current.title,
-      artist: passage.current.author
-    })
-  }, [])
+  const { player, playing, speed, loop, togglePlaying, setTime, setDuration } = usePlayerContext()
 
   useEffect(() => {
     player.current.src = passage.current.audio_src
 
-    player.current.onload = () => playerLoad
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: passage.current.title,
+      artist: passage.current.author
+    })
+
     player.current.onended = () => togglePlaying(false)
     player.current.onpause = () => togglePlaying(false)
     player.current.ontimeupdate = () => setTime(player.current.currentTime)

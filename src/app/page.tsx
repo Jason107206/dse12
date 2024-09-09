@@ -6,7 +6,7 @@ import { ApplicationContextProvider, useApplicationContext } from "@/context/app
 import { theme } from "@/context/theme-context";
 import { ThemeProvider } from "@mui/material";
 import { GAME_MATCHNG, PASSAGE_SELECT, PASSAGE_VIEW } from "../lib/constants";
-import GameMatching from "./components/game-matching";
+import GameMatching from "@/components/game_matching/game-matching";
 
 const Main = () => {
   const { page } = useApplicationContext()
