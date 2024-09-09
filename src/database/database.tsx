@@ -1,7 +1,7 @@
 export const Database = [
   {
     "title": "魚我所欲也",
-    "author": "孟子",
+    "author": "孟子 (儒)",
     "audio_src": "https://www.edb.gov.hk/attachment/tc/curriculum-development/kla/chi-edu/recommended-passages/ks4_04_c.mp3",
     "content": [
       [
@@ -41,8 +41,8 @@ export const Database = [
       ]
     ]
   }, {
-    "title": "逍遙遊 (節錄)",
-    "author": "莊子",
+    "title": "逍遙遊",
+    "author": "莊子 (道)",
     "audio_src": "https://www.edb.gov.hk/attachment/tc/curriculum-development/kla/chi-edu/recommended-passages/ks4_05_c.mp3",
     "content": [
       [
@@ -93,8 +93,8 @@ export const Database = [
     ]
   },
   {
-    "title": "勸學（節錄）",
-    "author": "荀子",
+    "title": "勸學",
+    "author": "荀子 (儒)",
     "audio_src": "https://www.edb.gov.hk/attachment/tc/curriculum-development/kla/chi-edu/recommended-passages/ks4_06_c.mp3",
     "content": [
       [
@@ -218,7 +218,7 @@ export const Database = [
   },
   {
     "title": "師說",
-    "author": "韓愈",
+    "author": "韓愈 (儒)",
     "audio_src": "https://www.edb.gov.hk/attachment/tc/curriculum-development/kla/chi-edu/recommended-passages/ks4_12_c.mp3",
     "content": [
       [
@@ -280,7 +280,7 @@ export const Database = [
   },
   {
     "title": "始得西山宴遊記",
-    "author": "柳宗元",
+    "author": "柳宗元 (道)",
     "audio_src": "https://www.edb.gov.hk/attachment/tc/curriculum-development/kla/chi-edu/recommended-passages/ks4_13_c.mp3",
     "content": [
       [
@@ -323,7 +323,7 @@ export const Database = [
   },
   {
     "title": "岳陽樓記",
-    "author": "范仲淹",
+    "author": "范仲淹 (儒)",
     "audio_src": "https://www.edb.gov.hk/attachment/tc/curriculum-development/kla/chi-edu/recommended-passages/ks4_14_c.mp3",
     "content": [
       [
