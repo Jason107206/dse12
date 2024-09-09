@@ -1,10 +1,11 @@
 import { useApplicationContext } from "@/context/application-context";
-import { Database } from "@/database/database";
 import { GAME_MATCHNG, PASSAGE_VIEW } from "@/lib/constants";
-import { Close, ExitToApp, RestartAlt, SkipNext, SkipPrevious } from "@mui/icons-material";
-import { Button, Fade, IconButton, LinearProgress, linearProgressClasses, styled, Typography } from "@mui/material";
+import { shuffleArray } from "@/lib/utils";
+import { ExitToApp, RestartAlt, SkipNext, SkipPrevious } from "@mui/icons-material";
+import { Box, Button, Fade, LinearProgress, linearProgressClasses, styled, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import AnswerOption from "./answer-option";
+import GameMatchingHeader from "./game-matching-header";
 
 const BorderLinearProgress = styled(LinearProgress)(() => ({
   height: 6,
@@ -43,12 +44,7 @@ export default function GameMatching() {
       ) temp_options.push(temp_number)
     }
 
-    for (let i = temp_options.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [temp_options[i], temp_options[j]] = [temp_options[j], temp_options[i]];
-    }
-
-    setOptions(temp_options)
+    setOptions(shuffleArray(temp_options))
   }
 
   useEffect(() => {
@@ -76,18 +72,10 @@ export default function GameMatching() {
 
   return (
     <Fade in={page === GAME_MATCHNG}>
-      <div
-        className="grid grid-rows-[auto_1fr]"
+      <Box
+        className="h-full flex flex-col"
       >
-        <div
-          className="flex justify-between items-center gap-4"
-        >
-          <IconButton
-            onClick={() => setPage(PASSAGE_VIEW)}
-          >
-            <Close />
-          </IconButton>
-        </div>
+        <GameMatchingHeader />
         <div
           className="p-2 grid content-evenly gap-8"
         >
@@ -182,7 +170,7 @@ export default function GameMatching() {
             )
           }
         </div>
-      </div>
+      </Box>
     </Fade>
   )
 }
