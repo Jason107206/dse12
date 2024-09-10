@@ -12,7 +12,7 @@ export default function PassageSelectorHeader() {
       >
         <Style />
         <Typography
-          className="text-xl tracking-wide"
+          className="text-xl"
         >
           {APP_NAME}
         </Typography>

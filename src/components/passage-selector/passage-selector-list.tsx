@@ -1,4 +1,5 @@
 import { useApplicationContext } from "@/context/application-context";
+import { theme } from "@/context/theme-context";
 import { Database } from "@/database/database";
 import { Passage } from "@/interface/passage-interface";
 import { PASSAGE_VIEW } from "@/lib/constants";
@@ -6,7 +7,6 @@ import { Checklist, History } from "@mui/icons-material";
 import { Box, Divider, Typography } from "@mui/material";
 import { ReactNode } from "react";
 import PassageListItem from "./passage-selector-listitem";
-import { theme } from "@/context/theme-context";
 
 const PassageListTitle = (
   {

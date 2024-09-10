@@ -6,6 +6,7 @@ import { Box, Button, Fade, LinearProgress, linearProgressClasses, styled, Typog
 import { useEffect, useState } from "react";
 import AnswerOption from "./answer-option";
 import GameMatchingHeader from "./game-matching-header";
+import { GameContextProvider, useGameContext } from "@/context/game-context";
 
 const BorderLinearProgress = styled(LinearProgress)(() => ({
   height: 6,
@@ -16,20 +17,15 @@ const BorderLinearProgress = styled(LinearProgress)(() => ({
   },
 }));
 
-export default function GameMatching() {
+const Main = () => {
   const { page, passage, setPage } = useApplicationContext()
+  const { options, paragraphIndex, paragraphLength, sentenceIndex, sentenceLength, setOptions, setParagraphIndex, setParagraphLength, setSentenceIndex, setSentenceLength } = useGameContext()
 
-  const [currentParagraphIndex, setCurrentParagraphIndex] = useState(0)
-  const [lastParagraphIndex, setLastParagraphIndex] = useState(0)
   const [currentParagraph, setCurrentParagraph] = useState([""])
 
-  const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0)
-  const [lastSentenceIndex, setLastSentenceIndex] = useState(0)
-  const [options, setOptions] = useState([1])
-
   const resetOptions = () => {
-    let temp_options = [currentSentenceIndex + 1]
-    let total_options = lastSentenceIndex > 5 ? 4 : lastSentenceIndex - 1
+    let temp_options = [sentenceIndex + 1]
+    let total_options = sentenceLength > 5 ? 4 : sentenceLength - 1
 
     while (temp_options.length < total_options) {
       let temp_number = Math.random() * currentParagraph.length
@@ -38,8 +34,8 @@ export default function GameMatching() {
       if (
         temp_options.indexOf(temp_number) == -1 &&
         (
-          temp_number < currentSentenceIndex - 1 ||
-          temp_number > currentSentenceIndex + 1
+          temp_number < sentenceIndex - 1 ||
+          temp_number > sentenceIndex + 1
         )
       ) temp_options.push(temp_number)
     }
@@ -48,25 +44,25 @@ export default function GameMatching() {
   }
 
   useEffect(() => {
-    setCurrentSentenceIndex(0)
-    setCurrentParagraph(passage.current.content[currentParagraphIndex])
-  }, [currentParagraphIndex])
+    setSentenceIndex(0)
+    setCurrentParagraph(passage.current.content[paragraphIndex])
+  }, [paragraphIndex])
 
   useEffect(() => {
-    setLastSentenceIndex(currentParagraph.length - 1)
+    setSentenceLength(currentParagraph.length - 1)
   }, [currentParagraph])
 
   useEffect(() => {
     resetOptions()
-  }, [currentSentenceIndex])
+  }, [sentenceIndex])
 
   useEffect(() => {
-    if (currentParagraphIndex == 0) {
+    if (paragraphIndex == 0) {
       setCurrentParagraph(passage.current.content[0])
     } else {
-      setCurrentParagraphIndex(0)
+      setParagraphIndex(0)
     }
-    setLastParagraphIndex(passage.current.content.length - 1)
+    setParagraphLength(passage.current.content.length - 1)
     resetOptions()
   }, [])
 
@@ -77,7 +73,7 @@ export default function GameMatching() {
       >
         <GameMatchingHeader />
         <div
-          className="p-2 grid content-evenly gap-8"
+          className="p-6 grid flex-grow content-evenly gap-8"
         >
           <div
             className="grid gap-2"
@@ -87,7 +83,7 @@ export default function GameMatching() {
               className="tracking-wider"
             >
               {
-                currentParagraph[currentSentenceIndex - 1]
+                currentParagraph[sentenceIndex - 1]
               }
             </Typography>
             <Typography
@@ -95,7 +91,7 @@ export default function GameMatching() {
               className="tracking-wider"
             >
               {
-                currentParagraph[currentSentenceIndex]
+                currentParagraph[sentenceIndex]
               }
             </Typography>
           </div>
@@ -103,31 +99,31 @@ export default function GameMatching() {
             className="grid gap-4"
           >
             {
-              currentSentenceIndex + 1 <= lastSentenceIndex &&
+              sentenceIndex + 1 <= sentenceLength &&
               options.map((x, i) =>
                 <AnswerOption
                   key={i}
                   label={currentParagraph[x]}
-                  isCorrect={x == currentSentenceIndex + 1}
-                  index={currentSentenceIndex}
-                  onClick={() => setCurrentSentenceIndex(i => i + 1)}
+                  isCorrect={x == sentenceIndex + 1}
+                  index={sentenceIndex}
+                  onClick={() => setSentenceIndex(i => i + 1)}
                 />
               )
             }
             {
-              currentSentenceIndex + 1 > lastSentenceIndex &&
+              sentenceIndex + 1 > sentenceLength &&
               <>
                 <Button
-                  onClick={() => setCurrentSentenceIndex(0)}
+                  onClick={() => setSentenceIndex(0)}
                   startIcon={<RestartAlt />}
                 >
                   重新開始
                 </Button>
                 {
-                  currentParagraphIndex + 1 > lastParagraphIndex &&
+                  paragraphIndex + 1 > paragraphLength &&
                   <>
                     <Button
-                      onClick={() => setCurrentParagraphIndex(0)}
+                      onClick={() => setParagraphIndex(0)}
                       startIcon={<SkipPrevious />}
                     >
                       從頭開始
@@ -141,10 +137,10 @@ export default function GameMatching() {
                   </>
                 }
                 {
-                  !(currentParagraphIndex + 1 > lastParagraphIndex) &&
+                  !(paragraphIndex + 1 > paragraphLength) &&
                   <>
                     <Button
-                      onClick={() => setCurrentParagraphIndex(i => i + 1)}
+                      onClick={() => setParagraphIndex(i => i + 1)}
                       startIcon={<SkipNext />}
                     >
                       下一段落
@@ -164,7 +160,7 @@ export default function GameMatching() {
                 key={i}
                 variant="determinate"
                 value={
-                  i < currentParagraphIndex ? 100 : i === currentParagraphIndex ? currentSentenceIndex / lastSentenceIndex * 100 : 0
+                  i < paragraphIndex ? 100 : i === paragraphIndex ? sentenceIndex / sentenceLength * 100 : 0
                 }
               />
             )
@@ -172,5 +168,13 @@ export default function GameMatching() {
         </div>
       </Box>
     </Fade>
+  )
+}
+
+export default function GameMatching() {
+  return (
+    <GameContextProvider>
+      <Main />
+    </GameContextProvider>
   )
 }

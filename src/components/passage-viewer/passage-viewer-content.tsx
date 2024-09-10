@@ -11,13 +11,13 @@ const Paragraph = (
 ) => {
   return (
     <Box
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-2"
     >
       {
         paragraph.map(
           (x, i) =>
             <Typography
-              className="text-xl tracking-wider"
+              className="text-lg"
               key={i}
             >
               {x}

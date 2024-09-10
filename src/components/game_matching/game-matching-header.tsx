@@ -32,12 +32,12 @@ export default function GameMatchingHeader() {
             className="flex flex-col items-center"
           >
             <Typography
-              className="text-lg tracking-wide"
+              className="text-lg"
             >
               {passage.current.title}
             </Typography>
             <Typography
-              className="text-xs tracking-wide"
+              className="text-xs"
             >
               {passage.current.author}
             </Typography>

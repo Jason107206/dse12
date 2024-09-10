@@ -1,8 +1,16 @@
 import { createTheme } from "@mui/material";
 
 export const theme = createTheme({
+  components: {
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          letterSpacing: '0.05em'
+        }
+      }
+    }
+  },
   palette: {
-    mode: 'light',
     primary: {
       dark: '#2c2b4d',
       main: '#3f3f6e',
