@@ -1,13 +1,19 @@
 import { useApplicationContext } from "@/context/application-context";
+import { useGameContext } from "@/context/game-context";
 import { PASSAGE_VIEW } from "@/lib/constants";
 import { ArrowBackIos, Replay, SportsEsports } from "@mui/icons-material";
 import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 
 export default function GameMatchingHeader() {
   const { passage, setPage } = useApplicationContext()
+  const { setOptions } = useGameContext()
 
   const handleExit = () => {
     setPage(PASSAGE_VIEW)
+  }
+
+  const handleRestart = () => {
+    setOptions(null as unknown as number[])
   }
 
   return (
@@ -46,6 +52,7 @@ export default function GameMatchingHeader() {
         <IconButton
           color="inherit"
           edge="end"
+          onClick={handleRestart}
         >
           <Replay />
         </IconButton>

@@ -10,18 +10,20 @@ const Main = () => {
   const { page } = useApplicationContext()
 
   return (
-    <Fade
-      in={page === PASSAGE_VIEW}
-      timeout={300}
+    <Box
+      className="h-full flex flex-col"
     >
-      <Box
-        className="h-full flex flex-col"
+      <PassageViewerHeader />
+      <Fade
+        className="flex flex-grow flex-col overflow-y-auto"
+        in={page === PASSAGE_VIEW}
       >
-        <PassageViewerHeader />
-        <PassageViewerContent />
-        <PassageViewerPlayer />
-      </Box>
-    </Fade>
+        <Box>
+          <PassageViewerContent />
+          <PassageViewerPlayer />
+        </Box>
+      </Fade>
+    </Box>
   )
 }
 
