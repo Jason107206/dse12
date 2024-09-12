@@ -1,4 +1,5 @@
 import { theme } from "@/context/theme-context";
+import { UIButton } from "@/design-system/button";
 import { Passage } from "@/interface/passage-interface";
 import { ArrowForwardIos } from "@mui/icons-material";
 import { Box, Button, Typography } from "@mui/material";
@@ -12,18 +13,12 @@ export default function PassageListItem(
   }
 ) {
   return (
-    <Button
-      sx={{
-        color: theme.palette.primary.main,
-        ...theme.applyStyles('dark', {
-          color: theme.palette.secondary.main,
-        })
-      }}
+    <UIButton
       endIcon={<ArrowForwardIos />}
       onClick={onClick}
     >
       <Box
-        className="py-2 flex flex-grow gap-2 justify-between items-center"
+        className="flex flex-grow gap-2 justify-between items-center"
       >
         <Typography
           className="font-medium"
@@ -37,6 +32,6 @@ export default function PassageListItem(
           {passage.author}
         </Typography>
       </Box>
-    </Button>
+    </UIButton>
   )
 }

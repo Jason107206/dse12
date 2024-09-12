@@ -1,5 +1,6 @@
 import { useApplicationContext } from "@/context/application-context";
 import { useGameContext } from "@/context/game-context";
+import { UIButton } from "@/design-system/button";
 import { Start } from "@mui/icons-material";
 import { Box, Fab, Fade, Typography } from "@mui/material";
 import { useEffect } from "react";
@@ -21,13 +22,13 @@ const Main = () => {
 
   return (
     <Box
-      className="p-6 flex flex-grow flex-col items-center justify-evenly"
+      className="p-6 flex flex-grow flex-col"
     >
       <Box
-        className="flex flex-col items-center gap-4"
+        className="flex flex-grow flex-col items-center justify-center gap-4"
       >
         <Typography
-          className="text-3xl font-medium"
+          className="text-2xl font-medium"
         >
           {passage.current.title}
         </Typography>
@@ -37,19 +38,16 @@ const Main = () => {
           {passage.current.author}
         </Typography>
       </Box>
-      <Box>
-        <Fab
-          className="px-6 flex items-center gap-4"
-          color="primary"
-          variant="extended"
-          onClick={handleStart}
-        >
-          <Start />
-          <Typography>
-            開始
-          </Typography>
-        </Fab>
-      </Box>
+      <UIButton
+        color="primary"
+        variant="contained"
+        onClick={handleStart}
+        startIcon={<Start />}
+      >
+        <Typography>
+          開始
+        </Typography>
+      </UIButton>
     </Box>
   )
 }

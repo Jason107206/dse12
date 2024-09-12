@@ -1,6 +1,4 @@
-import { useApplicationContext } from "@/context/application-context";
 import { GameContextProvider, useGameContext } from "@/context/game-context";
-import { GAME_MATCHNG } from "@/lib/constants";
 import { Box, Fade } from "@mui/material";
 import GameMatchingContent from "./game-matching-content";
 import GameMatchingHeader from "./game-matching-header";
@@ -15,10 +13,25 @@ const Main = () => {
     >
       <GameMatchingHeader />
       {
-        !options && <GameMatchingStart />
+        options === null &&
+        <Fade
+          className="flex flex-grow flex-col"
+          in={options === null}
+        >
+          <Box>
+            <GameMatchingStart />
+          </Box>
+        </Fade>
       }
       {
-        options && <GameMatchingContent />
+        options !== null &&
+        <Fade
+          className="flex flex-grow flex-col"
+          in={options !== null}>
+          <Box>
+            <GameMatchingContent />
+          </Box>
+        </Fade>
       }
     </Box>
   )

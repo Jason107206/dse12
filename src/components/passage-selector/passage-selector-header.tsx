@@ -1,6 +1,6 @@
-import { APP_NAME } from "@/lib/constants";
+import { APP_NAME, APP_VERSION } from "@/lib/constants";
 import { Style } from "@mui/icons-material";
-import { AppBar, Toolbar, Typography } from "@mui/material";
+import { AppBar, Chip, Toolbar, Typography } from "@mui/material";
 
 export default function PassageSelectorHeader() {
   return (
@@ -16,6 +16,10 @@ export default function PassageSelectorHeader() {
         >
           {APP_NAME}
         </Typography>
+        <Chip
+          color="secondary"
+          label={<Typography>{`Ver. ${APP_VERSION}`}</Typography>}
+        />
       </Toolbar>
     </AppBar>
   )
